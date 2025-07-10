@@ -52,7 +52,7 @@ python tree-generator.py
 
 ---
 
-Similar projects that I found inspiration from or took notes in how to make my own implementation:
+Check out these other similar projects that are cool too, which I also took inspiration from:
 - [Procedurally generating trees with space colonization algorithm](http://www.jgallant.com/procedurally-generating-trees-with-space-colonization-algorithm-in-xna/)
 - [cbonsai](https://gitlab.com/jallbrit/cbonsai)
 - [PyBonsai](https://github.com/Ben-Edwards44/PyBonsai)
