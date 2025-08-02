@@ -1,9 +1,10 @@
+from textual import events
 from textual.app import App, ComposeResult
-from textual.widgets import Static
+from textual.widgets import RichLog, Static
 from textual.timer import Timer
 import random
 
-#globals
+#Globals
 DISP_WIDTH = 84
 DISP_HEIGHT = 32
 
@@ -52,10 +53,18 @@ class TreeGenerator(App):
 
     def __init__(self):
         super().__init__()
-        self.grid = [[' ' for _ in range(DISP_WIDTH)] for _ in range(DISP_HEIGHT)]
-        self.branches = [Branch(12, -1), Branch(42, -1), Branch(64, -1)]
         self.timer: Timer | None = None
         self.tree_display: Static | None = None
+        self.init_state()
+
+    def init_state(self):
+        self.grid = [[' ' for _ in range(DISP_WIDTH)] for _ in range(DISP_HEIGHT)]
+        self.branches = [Branch(12, -1), Branch(42, -1), Branch(64, -1)]
+
+    def start_animation(self):
+        if self.timer:
+            self.timer.stop()
+        self.timer = self.set_interval(0.1, self.animate_step)
 
     def animate_step(self):
         self.branches = [b for b in self.branches if b.grow()]
@@ -74,15 +83,24 @@ class TreeGenerator(App):
         display_string = "\n".join("".join(row) for row in reversed(self.grid))
         self.tree_display.update(display_string)
 
-        if not self.branches:
+        if not self.branches and self.timer:
             self.timer.stop()
 
+    def reset_tree(self):
+        self.init_state()
+        self.tree_display.update("")
+        self.start_animation()
+        
     def on_mount(self):
-        self.timer = self.set_interval(0.1, self.animate_step)
+        self.start_animation()
 
     def compose(self) -> ComposeResult:
         self.tree_display = Static("", id="tree_box")
         yield self.tree_display
+
+    def on_key(self, event: events.Key) -> None:
+        if event.key == "r":
+            self.reset_tree()
 
 
 if __name__ == "__main__":
